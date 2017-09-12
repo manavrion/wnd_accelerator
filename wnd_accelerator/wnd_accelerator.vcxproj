@@ -209,6 +209,7 @@
     <ClCompile Include="event_system\key_event.h" />
     <ClCompile Include="frame_object.cpp" />
     <ClCompile Include="native_controls\native_control.cpp" />
+    <ClCompile Include="native_controls\native_control_win.cpp" />
     <ClCompile Include="native_controls\window.cpp" />
   </ItemGroup>
   <ItemGroup>

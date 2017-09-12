@@ -25,6 +25,9 @@
     <ClCompile Include="event_system\key_event.h">
       <Filter>event_system</Filter>
     </ClCompile>
+    <ClCompile Include="native_controls\native_control_win.cpp">
+      <Filter>native_controls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="native_controls\window.h">

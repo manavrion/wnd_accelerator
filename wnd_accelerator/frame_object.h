@@ -14,9 +14,6 @@ namespace wnd_accelerator {
         FrameObject(const FrameObject& abstructFrameObject) = delete;
         FrameObject(FrameObject&& abstructFrameObject) = delete;
 
-    protected:
-        virtual void PackImpl() = 0;
-
     public:
         // You must use Pack() for applay changes and maybe Repaint()
         virtual void Pack() = 0;        
