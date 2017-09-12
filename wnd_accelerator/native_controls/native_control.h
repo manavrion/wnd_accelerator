@@ -11,29 +11,30 @@ namespace wnd_accelerator {
         NativeControl(const NativeControl& abstructNativeControl) = delete;
         NativeControl(NativeControl&& abstructNativeControl) = delete;
 
+        virtual void Pack() final;
+        virtual void Build() final;
+
+        NativeControl* Add(NativeControl* child);
+        std::list<NativeControl*>& GetChilds() noexcept;
+        NativeControl* GetParent() noexcept;
+        void ClearChilds();       
+
+        bool IsInitialized() const noexcept;
+
+    protected:
+        virtual void Init(NativeControl* parent) = 0;
+        virtual void PackImpl() = 0;
+
     protected:
         bool isInitialized;
         NativeControl* parent;
         std::list<NativeControl*> childs;
 
-        virtual void Init(NativeControl* parent) = 0;
-        virtual void PackImpl() = 0;
+        // OS_WIN
+        HWND hwnd = 0;
 
     public:
-
-        std::list<NativeControl*>& GetChilds();
-        NativeControl* Add(NativeControl* child);
-        NativeControl* GetParent();
-        void ClearChilds();
-
-        virtual void Pack();
-        void Build();
-
-        virtual bool IsInitialized() const = 0;
-        virtual void Repaint() = 0;
-
-    public:
-        virtual ~NativeControl() { }
+        virtual ~NativeControl();
 
     };
 
