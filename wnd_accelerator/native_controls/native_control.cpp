@@ -6,7 +6,8 @@ namespace wnd_accelerator {
 
     NativeControl::NativeControl() :
         isInitialized(false),
-        parent(nullptr) {}
+        parent(nullptr),
+        listeners(new Listeners) {}
 
     void NativeControl::Pack() {
         this->PackImpl();
@@ -25,6 +26,8 @@ namespace wnd_accelerator {
     NativeControl* NativeControl::Add(NativeControl* child) {
         child->parent = this;
         childs.push_back(child);
+        this->MergeListeners(std::move(child->listeners));
+        child->listeners.reset();
         return this;
     }
 
@@ -47,104 +50,147 @@ namespace wnd_accelerator {
         return isInitialized;
     }
 
-	void NativeControl::NotifyMouseClicked(const MouseEvent& mouseEvent) {
-		for (auto& mouseListener : mouseListeners) {
-			mouseListener.MousePressed(mouseEvent);
-		}
-		for (auto& child : childs) {
-			child->NotifyMousePressed(mouseEvent);
-		}
-	}
+    Frame* NativeControl::AddMouseClickListener(MouseEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddMouseClickListener(func);
+            return this;
+        }
+        listeners->mouseEventsMap[Event::Type::mouseClick].push_back({this, std::move(func)});
+        return this;
+    }
 
-	void NativeControl::NotifyMousePressed(const MouseEvent& mouseEvent) {
-		for (auto& mouseListener : mouseListeners) {
-			mouseListener.MouseClicked(mouseEvent);
-		}
-		for (auto& child : childs) {
-			child->NotifyMouseClicked(mouseEvent);
-		}
-	}
+    Frame* NativeControl::AddMouseMoveListener(MouseEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddMouseMoveListener(func);
+            return this;
+        }
+        listeners->mouseEventsMap[Event::Type::mouseMove].push_back({this, std::move(func)});
+        return this;
+    }
 
-	void NativeControl::NotifyMouseReleased(const MouseEvent& mouseEvent) {
-		for (auto& mouseListener : mouseListeners) {
-			mouseListener.MouseReleased(mouseEvent);
-		}
-		for (auto& child : childs) {
-			child->NotifyMouseReleased(mouseEvent);
-		}
-	}
+    Frame* NativeControl::AddLeftMouseButtonPressListener(MouseEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddLeftMouseButtonPressListener(func);
+            return this;
+        }
+        listeners->mouseEventsMap[Event::Type::leftMouseButtonPress].push_back({this, std::move(func)});
+        return this;
+    }
 
-	void NativeControl::NotifyMouseEntered(const MouseEvent& mouseEvent) {
-		for (auto& mouseListener : mouseListeners) {
-			mouseListener.MouseEntered(mouseEvent);
-		}
-		for (auto& child : childs) {
-			child->NotifyMouseEntered(mouseEvent);
-		}
-	}
+    Frame* NativeControl::AddMiddleMouseButtonPressListener(MouseEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddMiddleMouseButtonPressListener(func);
+            return this;
+        }
+        listeners->mouseEventsMap[Event::Type::middleMouseButtonPress].push_back({this, std::move(func)});
+        return this;
+    }
 
-	void NativeControl::NotifyMouseExited(const MouseEvent& mouseEvent) {
-		for (auto& mouseListener : mouseListeners) {
-			mouseListener.MouseExited(mouseEvent);
-		}
-		for (auto& child : childs) {
-			child->NotifyMouseExited(mouseEvent);
-		}
-	}
+    Frame* NativeControl::AddRightMouseButtonPressListener(MouseEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddRightMouseButtonPressListener(func);
+            return this;
+        }
+        listeners->mouseEventsMap[Event::Type::rightMouseButtonPress].push_back({this, std::move(func)});
+        return this;
+    }
 
-	void NativeControl::NotifyMouseWheelMoved(const MouseEvent& mouseEvent) {
-		for (auto& mouseListener : mouseListeners) {
-			mouseListener.MouseWheelMoved(mouseEvent);
-		}
-		for (auto& child : childs) {
-			child->NotifyMouseWheelMoved(mouseEvent);
-		}
-	}
+    Frame* NativeControl::AddLeftMouseButtonReleaseListener(MouseEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddLeftMouseButtonReleaseListener(func);
+            return this;
+        }
+        listeners->mouseEventsMap[Event::Type::leftMouseButtonRelease].push_back({this, std::move(func)});
+        return this;
+    }
 
-	void NativeControl::NotifyMouseDragged(const MouseEvent& mouseEvent) {
-		for (auto& mouseListener : mouseListeners) {
-			mouseListener.MouseDragged(mouseEvent);
-		}
-		for (auto& child : childs) {
-			child->NotifyMouseDragged(mouseEvent);
-		}
-	}
+    Frame* NativeControl::AddMiddleMouseButtonReleaseListener(MouseEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddMiddleMouseButtonReleaseListener(func);
+            return this;
+        }
+        listeners->mouseEventsMap[Event::Type::middleMouseButtonRelease].push_back({this, std::move(func)});
+        return this;
+    }
 
-	void NativeControl::NotifyMouseMoved(const MouseEvent& mouseEvent) {
-		for (auto& mouseListener : mouseListeners) {
-			mouseListener.MouseMoved(mouseEvent);
-		}
-		for (auto& child : childs) {
-			child->NotifyMouseMoved(mouseEvent);
-		}
-	}
+    Frame* NativeControl::AddRightMouseButtonReleaseListener(MouseEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddRightMouseButtonReleaseListener(func);
+            return this;
+        }
+        listeners->mouseEventsMap[Event::Type::rightMouseButtonRelease].push_back({this, std::move(func)});
+        return this;
+    }
 
-	void NativeControl::NotifyKeyTyped(const KeyEvent& keyEvent) {
-		for (auto& keyListener : keyListeners) {
-			keyListener.KeyTyped(keyEvent);
-		}
-		for (auto& child : childs) {
-			child->NotifyKeyTyped(keyEvent);
-		}
-	}
+    // TODO
 
-	void NativeControl::NotifyKeyPressed(const KeyEvent& keyEvent) {
-		for (auto& keyListener : keyListeners) {
-			keyListener.KeyPressed(keyEvent);
-		}
-		for (auto& child : childs) {
-			child->NotifyKeyPressed(keyEvent);
-		}
-	}
+    Frame* NativeControl::AddMouseEnterListener(MouseEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddMouseEnterListener(func);
+            return this;
+        }
+        listeners->mouseEventsMap[Event::Type::mouseEnter].push_back({this, std::move(func)});
+        return this;
+    }
 
-	void NativeControl::NotifyKeyReleased(const KeyEvent& keyEvent) {
-		for (auto& keyListener : keyListeners) {
-			keyListener.KeyReleased(keyEvent);
-		}
-		for (auto& child : childs) {
-			child->NotifyKeyReleased(keyEvent);
-		}
-	}
+    Frame* NativeControl::AddMouseExitListener(MouseEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddMouseExitListener(func);
+            return this;
+        }
+        listeners->mouseEventsMap[Event::Type::mouseExit].push_back({this, std::move(func)});
+        return this;
+    }
+
+    Frame* NativeControl::AddMouseWheelMoveListener(MouseEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddMouseWheelMoveListener(func);
+            return this;
+        }
+        listeners->mouseEventsMap[Event::Type::mouseMove].push_back({this, std::move(func)});
+        return this;
+    }
+
+    Frame* NativeControl::AddMouseDragListener(MouseEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddMouseDragListener(func);
+            return this;
+        }
+        listeners->mouseEventsMap[Event::Type::mouseDrag].push_back({this, std::move(func)});
+        return this;
+    }
+
+    Frame* NativeControl::AddKeyTypeListener(KeyEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddKeyTypeListener(func);
+            return this;
+        }
+        listeners->keyEventsMap[Event::Type::keyType].push_back({this, std::move(func)});
+        return this;
+    }
+
+    Frame* NativeControl::AddKeyPressListener(KeyEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddKeyPressListener(func);
+            return this;
+        }
+        listeners->keyEventsMap[Event::Type::keyPress].push_back({this, std::move(func)});
+        return this;
+    }
+
+    Frame* NativeControl::AddKeyReleaseListener(KeyEventFunction func) noexcept {
+        if (listeners == nullptr) {
+            parent->AddKeyReleaseListener(func);
+            return this;
+        }
+        listeners->keyEventsMap[Event::Type::keyRelease].push_back({this, std::move(func)});
+        return this;
+    }
+
+    void NativeControl::MergeListeners(std::unique_ptr<Listeners> listeners) {
+        listeners->keyEventsMap.insert(listeners->keyEventsMap.begin(), listeners->keyEventsMap.end());
+        listeners->mouseEventsMap.insert(listeners->mouseEventsMap.begin(), listeners->mouseEventsMap.end());
+    }
 
     NativeControl::~NativeControl() {
     }

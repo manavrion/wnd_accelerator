@@ -211,12 +211,12 @@
     <ClCompile Include="native_controls\native_control.cpp" />
     <ClCompile Include="native_controls\native_control_win.cpp" />
     <ClCompile Include="native_controls\window.cpp" />
+    <ClCompile Include="native_controls\window_win.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="afx.h" />
-    <ClInclude Include="event_system\key_listener.h" />
+    <ClInclude Include="event_system\event.h" />
     <ClInclude Include="event_system\mouse_event.h" />
-    <ClInclude Include="event_system\mouse_listener.h" />
     <ClInclude Include="frame_object.h" />
     <ClInclude Include="native_controls\native_control.h" />
     <ClInclude Include="native_controls\window.h" />

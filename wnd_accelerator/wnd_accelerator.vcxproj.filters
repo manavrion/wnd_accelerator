@@ -28,6 +28,9 @@
     <ClCompile Include="native_controls\native_control_win.cpp">
       <Filter>native_controls</Filter>
     </ClCompile>
+    <ClCompile Include="native_controls\window_win.cpp">
+      <Filter>native_controls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="native_controls\window.h">
@@ -38,13 +41,10 @@
       <Filter>native_controls</Filter>
     </ClInclude>
     <ClInclude Include="afx.h" />
-    <ClInclude Include="event_system\mouse_listener.h">
-      <Filter>event_system</Filter>
-    </ClInclude>
     <ClInclude Include="event_system\mouse_event.h">
       <Filter>event_system</Filter>
     </ClInclude>
-    <ClInclude Include="event_system\key_listener.h">
+    <ClInclude Include="event_system\event.h">
       <Filter>event_system</Filter>
     </ClInclude>
   </ItemGroup>

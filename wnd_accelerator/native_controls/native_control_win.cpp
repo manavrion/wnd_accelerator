@@ -8,79 +8,15 @@ namespace wnd_accelerator {
 
     static std::unordered_map<HWND, NativeControl*> nativeControlMap;
 
-    LRESULT CALLBACK windowProc(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) {
+    // static
+    LRESULT CALLBACK windowProcMapper(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) {
         if (nativeControlMap.count(hWindow) == 0) {
             return DefWindowProc(hWindow, message, wParam, lParam);
         }
 
         NativeControl* sender = nativeControlMap[hWindow];
 
-		switch (message) {
-			case WM_LBUTTONDOWN:
-			case WM_RBUTTONDOWN:
-			case WM_LBUTTONUP:
-			case WM_RBUTTONUP:
-			case WM_MOUSEMOVE: {
-				MouseEvent mouseEvent;
-
-				mouseEvent.x = GET_X_LPARAM(lParam);
-				mouseEvent.y = GET_Y_LPARAM(lParam);
-
-				if (wParam & MK_CONTROL) mouseEvent.isCtrlPressed = true;
-				if (wParam & MK_CONTROL) mouseEvent.controlDown = true;
-				if (wParam & MK_LBUTTON) mouseEvent.leftButtonDown = true;
-				if (wParam & MK_MBUTTON) mouseEvent.midButtonDown = true;
-				if (wParam & MK_RBUTTON) mouseEvent.rightButtonDown = true;
-				if (wParam & MK_SHIFT)   mouseEvent.shiftDown = true;
-
-				switch (message) {
-					case WM_LBUTTONDOWN: {
-						mouseEvent.button = MouseEvent::MouseButton::left;
-						mouseEvent.type = MouseEvent::EventType::mousePress;
-						sender->NotifyMousePressed(mouseEvent);
-						break;
-					}
-					case WM_RBUTTONDOWN: {
-						mouseEvent.button = MouseEvent::MouseButton::right;
-						mouseEvent.type = MouseEvent::EventType::mousePress;
-						sender->NotifyMousePressed(mouseEvent);
-						break;
-					}
-					case WM_LBUTTONUP: {
-						mouseEvent.button = MouseEvent::MouseButton::left;
-						mouseEvent.type = MouseEvent::EventType::mouseRelease;
-						sender->NotifyMouseReleased(mouseEvent);
-						break;
-					}
-					case WM_RBUTTONUP: {
-						mouseEvent.button = MouseEvent::MouseButton::right;
-						mouseEvent.type = MouseEvent::EventType::mouseRelease;
-						sender->NotifyMouseReleased(mouseEvent);
-						break;
-					}
-					case WM_MOUSEMOVE: {
-						mouseEvent.type = MouseEvent::EventType::mouseMove;
-						sender->NotifyMouseMoved(mouseEvent);
-						break;
-					}
-				}
-				break;
-			}
-			case WM_KEYDOWN:
-			case WM_KEYUP: {
-
-				KeyEvent keyEvent;
-				event.code = KeyCodes(wParam); //Code
-
-				BYTE lpKeyState[256];
-				GetKeyboardState(lpKeyState);
-				ToUnicode(wParam, HIWORD(lParam) & 0xFF, lpKeyState, &event.key, 1, 0);
-				nativeAbstructObject[hWnd].first->runKeyReleasedEvent(event);
-				//this->wmKeyUp(event);
-
-				break;
-			}
-		}
+		
 
 
 
@@ -184,9 +120,11 @@ namespace wnd_accelerator {
             //this->wmKeyUp(event);
         }
 #endif
-        return DefWindowProc(hWindow, message, wParam, lParam);
+        return sender->WindowProc(hWindow, message, wParam, lParam);
     }
 
-
+    LRESULT NativeControl::WindowProc(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) {
+        return DefWindowProc(hWindow, message, wParam, lParam);
+    }
 
 }
