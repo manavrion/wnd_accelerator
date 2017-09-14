@@ -14,6 +14,19 @@ namespace wnd_accelerator {
     class Window : public NativeControl {
     public:
         Window();
+
+        // You must use Update() to apply the size and position changes
+        virtual void Update() final {
+            UpdateImpl();
+            Repaint();
+        }
+
+        // You must use Repaint() to apply graphical changes
+        virtual void Repaint() final {
+            RepaintImpl();
+        }
+
+
         virtual ~Window();
 
     protected:

@@ -207,19 +207,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="event_system\key_event.h" />
-    <ClCompile Include="frame_object.cpp" />
+    <ClCompile Include="frame.cpp" />
+    <ClCompile Include="gdi_render\gdi_render.cpp" />
     <ClCompile Include="native_controls\native_control.cpp" />
     <ClCompile Include="native_controls\native_control_win.cpp" />
     <ClCompile Include="native_controls\window.cpp" />
     <ClCompile Include="native_controls\window_win.cpp" />
+    <ClCompile Include="render.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="afx.h" />
     <ClInclude Include="event_system\event.h" />
     <ClInclude Include="event_system\mouse_event.h" />
-    <ClInclude Include="frame_object.h" />
+    <ClInclude Include="frame.h" />
+    <ClInclude Include="gdi_render\gdi_render.h" />
     <ClInclude Include="native_controls\native_control.h" />
     <ClInclude Include="native_controls\window.h" />
+    <ClInclude Include="render.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

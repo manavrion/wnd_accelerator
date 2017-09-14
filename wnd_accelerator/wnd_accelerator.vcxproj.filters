@@ -7,18 +7,17 @@
     <Filter Include="native_controls">
       <UniqueIdentifier>{ed3f4566-4684-4888-8442-69ad09241297}</UniqueIdentifier>
     </Filter>
-    <Filter Include="paintable_controls">
-      <UniqueIdentifier>{e5040b54-62f2-4832-ae8f-d000018d9da5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="event_system">
       <UniqueIdentifier>{afa6ea7f-9998-4432-afb5-167e41e65e8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gdi_render">
+      <UniqueIdentifier>{e5040b54-62f2-4832-ae8f-d000018d9da5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="native_controls\window.cpp">
       <Filter>native_controls</Filter>
     </ClCompile>
-    <ClCompile Include="frame_object.cpp" />
     <ClCompile Include="native_controls\native_control.cpp">
       <Filter>native_controls</Filter>
     </ClCompile>
@@ -31,12 +30,16 @@
     <ClCompile Include="native_controls\window_win.cpp">
       <Filter>native_controls</Filter>
     </ClCompile>
+    <ClCompile Include="frame.cpp" />
+    <ClCompile Include="render.cpp" />
+    <ClCompile Include="gdi_render\gdi_render.cpp">
+      <Filter>gdi_render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="native_controls\window.h">
       <Filter>native_controls</Filter>
     </ClInclude>
-    <ClInclude Include="frame_object.h" />
     <ClInclude Include="native_controls\native_control.h">
       <Filter>native_controls</Filter>
     </ClInclude>
@@ -46,6 +49,11 @@
     </ClInclude>
     <ClInclude Include="event_system\event.h">
       <Filter>event_system</Filter>
+    </ClInclude>
+    <ClInclude Include="frame.h" />
+    <ClInclude Include="render.h" />
+    <ClInclude Include="gdi_render\gdi_render.h">
+      <Filter>gdi_render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
