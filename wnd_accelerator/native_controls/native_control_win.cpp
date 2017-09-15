@@ -1,5 +1,7 @@
 #include "native_control.h"
 
+#include "window.h"
+
 #include <windowsx.h>
 #include <unordered_map>
 #include <Windows.h>
@@ -123,8 +125,102 @@ namespace wnd_accelerator {
         return sender->WindowProc(hWindow, message, wParam, lParam);
     }
 
+    void NativeControl::InitPre() {}
+
+    void Window::InitPre() {
+        WNDCLASSEX wcex;
+        wcex.cbSize = sizeof(WNDCLASSEX);
+
+        wcex.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+        wcex.lpfnWndProc = windowProcMapper;
+        wcex.cbClsExtra = 0;
+        wcex.cbWndExtra = 0;
+        wcex.hInstance = GetInstanceModule(nullptr);
+        //wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_METAFRAME));
+        wcex.hIcon = nullptr;
+        wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+        wcex.hbrBackground = nullptr;
+        //wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_METAFRAME);
+        wcex.lpszMenuName = nullptr;
+
+        wcex.lpszClassName = text.c_str();
+        //wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+        wcex.hIconSm = nullptr;
+
+        RegisterClassEx(&wcex);
+    }
+
+    void NativeControl::Init() {
+        hWindow = CreateWindow(text.c_str(), 
+                               text.c_str(), 
+                               WS_OVERLAPPEDWINDOW,
+                               CW_USEDEFAULT, 
+                               0, 
+                               width + 16, 
+                               height + 39, 
+                               nullptr, 
+                               nullptr, 
+                               GetInstanceModule(nullptr), 
+                               nullptr);
+        nativeControlMap[hWindow] = this;
+
+        CreateBuffer();
+    }
+
     LRESULT NativeControl::WindowProc(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) {
         return DefWindowProc(hWindow, message, wParam, lParam);
     }
+
+    void NativeControl::CreateBuffer() {
+        buffer = new Gdiplus::Bitmap(width, height);
+        graphics = new Gdiplus::Graphics(buffer);
+        /*// Init buffer
+        buffer = new byte[width * height * 4];
+        bufferHBitmap = CreateBitmap(width, height, 1, 32, buffer);
+
+        // Init HDC and graphics
+        bufferHDC = CreateCompatibleDC(nullptr);
+        SelectObject(bufferHDC, bufferHBitmap);
+        bufferGraphics = new Gdiplus::Graphics(bufferHDC);
+
+        bufferSize = Size(width, height);*/
+    }
+
+    void NativeControl::DeleteBuffer() {
+        delete[] buffer;
+        DeleteObject(bufferHBitmap);
+
+        DeleteDC(bufferHDC);
+        delete bufferGraphics;
+    }
+
+    void NativeControl::ResizeBuffer() {
+        if (!bufferSize.Equals(Size(width, height))) {
+            DeleteBuffer();
+            CreateBuffer();
+        }
+    }
+
+    // Build real frame
+    void NativeControl::BuildImpl() {
+        InitPre();
+        Init();
+    }
+
+    // Apply resize and reposition
+    void NativeControl::UpdateImpl() {
+
+    }
+
+    // Some painting operations of this object
+    void NativeControl::Paint() {
+
+    }
+
+    void NativeControl::PaintPre() {}
+
+    void NativeControl::PaintBuffers() {}
+
+    void NativeControl::PaintPost() {}
 
 }

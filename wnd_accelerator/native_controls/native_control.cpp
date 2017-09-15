@@ -7,6 +7,7 @@ namespace wnd_accelerator {
     NativeControl::NativeControl() {}
 
     NativeControl::~NativeControl() {
+        DeleteBuffer();
     }
 
 }

@@ -26,12 +26,15 @@ namespace wnd_accelerator {
             RepaintImpl();
         }
 
+        void run() {};
 
         virtual ~Window();
 
     protected:
         // OS_WIN
         virtual LRESULT WindowProc(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) final;
+
+        virtual void InitPre() final;;
 
     };
 

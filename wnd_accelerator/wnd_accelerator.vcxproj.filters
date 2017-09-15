@@ -31,8 +31,7 @@
       <Filter>native_controls</Filter>
     </ClCompile>
     <ClCompile Include="frame.cpp" />
-    <ClCompile Include="render.cpp" />
-    <ClCompile Include="gdi_render\gdi_render.cpp">
+    <ClCompile Include="gdi_render\gdi_control.cpp">
       <Filter>gdi_render</Filter>
     </ClCompile>
   </ItemGroup>
@@ -51,8 +50,7 @@
       <Filter>event_system</Filter>
     </ClInclude>
     <ClInclude Include="frame.h" />
-    <ClInclude Include="render.h" />
-    <ClInclude Include="gdi_render\gdi_render.h">
+    <ClInclude Include="gdi_render\gdi_control.h">
       <Filter>gdi_render</Filter>
     </ClInclude>
   </ItemGroup>
