@@ -1,13 +1,14 @@
 #pragma once
 #include "../afx.h"
 #include "../frame.h"
+#include "../gdi_render/gdi_control.h"
 
 #include <list>
 #include <utility>
 
 namespace wnd_accelerator {
 
-    class NativeControl : public Frame {
+    class NativeControl : public GdiControl {
     public:
         NativeControl();
         NativeControl(const NativeControl&) = delete;
@@ -19,14 +20,6 @@ namespace wnd_accelerator {
 
         // Apply resize and reposition
         virtual void UpdateImpl();
-
-        // Some painting operations of this object
-        virtual void Paint() final;
-
-        virtual void PaintPre();
-        virtual void PaintBuffers();
-        virtual void PaintPost();
-
     
         virtual void InitPre();
         virtual void Init();
@@ -35,34 +28,22 @@ namespace wnd_accelerator {
 
         virtual LRESULT WindowProc(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam);
 
-        void CreateBuffer();
-        void DeleteBuffer();
-        void ResizeBuffer();
+        virtual void DrawBuffer() final;
 
-        void SystemPaintBuffer() {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWindow, &ps);
-            BitBlt(hdc, 0, 0, width, height, bufferHDC, 0, 0, SRCCOPY);            
-            EndPaint(hWindow, &ps);
-        }
+        virtual void PaintPre(Graphics* graphics) {}
+        virtual void PaintPost(Graphics* graphics) {}
 
-        void PaintBuffer(Gdiplus::Graphics* graphics) {
-            graphics->Draw
+
+        void OnChangeControlSize(int width, int height) {
+            SetSize(width, height);
+            Update();
         }
 
     protected:
 
         // OS_WIN
         HWND hWindow;
-
-        // Buffer
-        //byte* buffer;
-        //HBITMAP bufferHBitmap;
-        //Size bufferSize;
-
-        //HDC bufferHDC;
-        Gdiplus::Bitmap* buffer;
-        Gdiplus::Graphics* graphics;
+        std::string windowInternalId;
 
     public:
         virtual ~NativeControl();

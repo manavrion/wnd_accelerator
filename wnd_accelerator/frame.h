@@ -14,6 +14,8 @@ namespace wnd_accelerator {
         Frame();
         Frame(const Frame& abstructFrameObject) = delete;
         Frame(Frame&& abstructFrameObject) = delete;
+        Frame& operator=(const Frame&) = delete;
+        virtual ~Frame();
 
     public:
 
@@ -44,6 +46,10 @@ namespace wnd_accelerator {
         Frame* SetHeight(int height);
         Frame* SetText(std::string text);
         Frame* SetBackground(Color background);
+        Frame* SetStaticWidth();
+        Frame* SetStaticHeight();
+        Frame* SetDynamicWidth();
+        Frame* SetDynamicHeight();
 
         Frame* SetPosition(int x, int y);
         Frame* SetPosition(const Point& point);
@@ -52,7 +58,9 @@ namespace wnd_accelerator {
         Frame* SetRect(int x, int y, int width, int height);
         Frame* SetRect(const Rect& rect);
         Frame* SetProperty(int x, int y, int width, int height, std::string text, Color background);
-        
+        Frame* SetStaticSize();
+        Frame* SetDynamicSize();
+
         int GetX() const;
         int GetY() const;
         int GetWidth() const;
@@ -64,6 +72,8 @@ namespace wnd_accelerator {
         Size GetSize() const;
         Rect GetRect() const;
 
+        bool IsStaticWidth() const;
+        bool IsStaticHeight() const;
 
         using KeyEventFunction = std::function<void(Frame*, KeyEvent*)>;
         using MouseEventFunction = std::function<void(Frame*, MouseEvent*)>;
@@ -144,7 +154,6 @@ namespace wnd_accelerator {
 
         void MergeListeners(std::unique_ptr<Listeners> listeners);
 
-
     protected:
         // Location in parent
         int x;
@@ -156,6 +165,9 @@ namespace wnd_accelerator {
         int width;
         int height;
 
+        bool staticWidth;
+        bool staticHeight;
+
         std::string text;
         Color background;
 
@@ -164,9 +176,6 @@ namespace wnd_accelerator {
         bool build;
         // Need to keep event listeners before parent set
         std::unique_ptr<Listeners> listeners;
-
-    public:
-        virtual ~Frame();
     };
 
 }

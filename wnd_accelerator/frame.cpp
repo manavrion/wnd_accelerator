@@ -4,7 +4,9 @@ namespace wnd_accelerator {
 
     Frame::Frame() :
         x(10), y(10),
-        width(100), height(25), 
+        width(100), height(25),
+        staticWidth(false),
+        staticHeight(false),
         build(false),
         parent(nullptr),
         listeners(new Listeners) {}
@@ -95,6 +97,26 @@ namespace wnd_accelerator {
         return this;
     }
 
+    Frame* Frame::SetStaticWidth() {
+        staticWidth = true;
+        return this;
+    }
+
+    Frame* Frame::SetStaticHeight() {
+        staticHeight = true;
+        return this;
+    }
+
+    Frame* Frame::SetDynamicWidth() {
+        staticWidth = false;
+        return this;
+    }
+
+    Frame* Frame::SetDynamicHeight() {
+        staticHeight = false;
+        return this;
+    }
+
     Frame* Frame::SetPosition(int x, int y) {
         this->x = x;
         this->y = y;
@@ -134,6 +156,14 @@ namespace wnd_accelerator {
         return this;
     }
 
+    Frame* Frame::SetStaticSize() {
+        return SetStaticWidth()->SetStaticHeight();
+    }
+
+    Frame* Frame::SetDynamicSize() {
+        return SetDynamicWidth()->SetDynamicHeight();
+    }
+
     int Frame::GetX() const {
         return x;
     }
@@ -168,6 +198,14 @@ namespace wnd_accelerator {
 
     Rect Frame::GetRect() const {
         return Rect(x, y, width, height);
+    }
+
+    bool Frame::IsStaticWidth() const {
+        return staticWidth;
+    }
+
+    bool Frame::IsStaticHeight() const {
+        return staticHeight;
     }
 
     Frame* Frame::AddMouseClickListener(MouseEventFunction func) {

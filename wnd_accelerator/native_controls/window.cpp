@@ -4,7 +4,6 @@ namespace wnd_accelerator {
 
     Window::Window() {}
 
-
     Window::~Window() {}
 
 }

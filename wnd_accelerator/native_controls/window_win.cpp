@@ -1,5 +1,6 @@
 #include "window.h"
 
+#include <Windows.h>
 #include <windowsx.h>
 
 namespace wnd_accelerator {
@@ -78,12 +79,36 @@ namespace wnd_accelerator {
             }
             case WM_PAINT:
             {
-
-                //wmPaintBackBufferEvent();
+                this->DrawBuffer();
                 break;
             }
         }
-        return 0;
+        return DefWindowProc(hWindow, message, wParam, lParam);
+    }
+
+
+    // You must use Repaint() to apply graphical changes
+    void Window::Repaint() {
+        RepaintImpl();
+        InvalidateRect(hWindow, nullptr, true);
+    }
+
+    int Window::Run() {
+        Build();
+        Pack();
+
+        bool nCmdShow = true;
+        ShowWindow(hWindow, nCmdShow);
+        UpdateWindow(hWindow);
+
+        MSG msg;
+        while (GetMessage(&msg, nullptr, 0, 0)) {
+            if (!TranslateAccelerator(msg.hwnd, nullptr, &msg)) {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+        }
+        return (int)msg.wParam;
     }
 
 }

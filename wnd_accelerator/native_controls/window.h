@@ -22,11 +22,9 @@ namespace wnd_accelerator {
         }
 
         // You must use Repaint() to apply graphical changes
-        virtual void Repaint() final {
-            RepaintImpl();
-        }
+        virtual void Repaint() final;
 
-        void run() {};
+        int Run();
 
         virtual ~Window();
 
