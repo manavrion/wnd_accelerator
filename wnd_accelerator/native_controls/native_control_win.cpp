@@ -7,6 +7,7 @@
 #include <Windows.h>
 #include <windowsx.h>
 #include <unordered_map>
+#include <chrono>
 
 namespace wnd_accelerator {
 
@@ -38,32 +39,6 @@ namespace wnd_accelerator {
 
     void NativeControl::InitPre() {}
 
-    void Window::InitPre() {
-
-        windowInternalId = "window" + std::to_string(int(this));
-
-        WNDCLASSEX wcex;
-        wcex.cbSize = sizeof(WNDCLASSEX);
-
-        wcex.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
-        wcex.lpfnWndProc = windowProcMapper;
-        wcex.cbClsExtra = 0;
-        wcex.cbWndExtra = 0;
-        wcex.hInstance = GetInstanceModule(nullptr);
-        //wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_METAFRAME));
-        wcex.hIcon = nullptr;
-        wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-        wcex.hbrBackground = nullptr;
-        //wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_METAFRAME);
-        wcex.lpszMenuName = nullptr;
-
-        wcex.lpszClassName = windowInternalId.c_str();
-        //wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-        wcex.hIconSm = nullptr;
-
-        RegisterClassEx(&wcex);
-    }
-
     void NativeControl::Init() {
 
         DWORD staticFlag = (staticWidth && staticHeight) ? 0 : WS_THICKFRAME | WS_MAXIMIZEBOX;
@@ -74,18 +49,18 @@ namespace wnd_accelerator {
             WS_MINIMIZEBOX |
             staticFlag;
 
-
-        hWindow = CreateWindow(windowInternalId.c_str(),
-                               text.c_str(), 
-                               dwStyle,
-                               CW_USEDEFAULT, 
-                               0, 
-                               width + 16, 
-                               height + 39, 
-                               nullptr, 
-                               nullptr, 
-                               GetInstanceModule(nullptr), 
-                               nullptr);
+        hWindow = CreateWindowEx(0,
+                                 windowInternalId.c_str(),
+                                 text.c_str(), 
+                                 dwStyle,
+                                 CW_USEDEFAULT,
+                                 CW_USEDEFAULT,
+                                 width + 16, 
+                                 height + 39, 
+                                 nullptr, 
+                                 nullptr, 
+                                 GetInstanceModule(nullptr), 
+                                 nullptr);
         nativeControlMap[hWindow] = this;
 
         CreateBuffer();
@@ -99,10 +74,21 @@ namespace wnd_accelerator {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWindow, &ps);
 
+        auto start = std::chrono::system_clock::now();
+
+        this->Paint();
+
+        auto end = std::chrono::system_clock::now();
+        auto tm = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+        graphics->FillRectangle(&SolidBrush(Color::Red), Rect(0, 0, 50, 20));
+        graphics->DrawString((std::to_wstring(1000 / tm.count()) + L" fps").c_str(), -1, &Font(L"Arial", 12), PointF(0, 0), &SolidBrush(Color(255, 255, 255)));
+
         HBITMAP bufferHBitmap;
         buffer->GetHBITMAP(this->background, &bufferHBitmap);
         HDC bufferHDC = CreateCompatibleDC(nullptr);
         SelectObject(bufferHDC, bufferHBitmap);
+
 
         BitBlt(hdc, 0, 0, width, height, bufferHDC, 0, 0, SRCCOPY);
 

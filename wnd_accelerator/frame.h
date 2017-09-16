@@ -29,14 +29,11 @@ namespace wnd_accelerator {
         // You must use Repaint() to apply graphical changes
         virtual void Repaint();
 
-        // You should use RepaintBackground() instead of Repaint()
-        // if the childs does not need to Repaint()
-        virtual void RepaintBackground();
-
         Frame* Add(Frame* child);
 
         std::list<Frame*>& GetChilds();
         Frame* GetParent();
+        Frame* SetParent(Frame* parent);
         void ClearChilds();
 
 
@@ -72,8 +69,26 @@ namespace wnd_accelerator {
         Size GetSize() const;
         Rect GetRect() const;
 
+        int GetXAbs() {
+            if (parent) {
+                return x + parent->GetXAbs();
+            }
+            return 0;
+        }
+
+        int GetYAbs() {
+            if (parent) {
+                return y + parent->GetYAbs();
+            }
+            return 0;
+        }
+
         bool IsStaticWidth() const;
         bool IsStaticHeight() const;
+
+        virtual void Paint() = 0;
+        virtual Graphics* GetGraphics() = 0;
+        virtual Bitmap* GetBuffer() = 0;
 
         using KeyEventFunction = std::function<void(Frame*, KeyEvent*)>;
         using MouseEventFunction = std::function<void(Frame*, MouseEvent*)>;
@@ -101,6 +116,7 @@ namespace wnd_accelerator {
         Frame* AddKeyReleaseListener(KeyEventFunction func);
 
 
+
         // Aliases
         Frame* AddMouseClickListener(EmptyEventFunction func);
         Frame* AddMouseMoveListener(EmptyEventFunction func);
@@ -123,17 +139,111 @@ namespace wnd_accelerator {
         Frame* AddKeyPressListener(EmptyEventFunction func);
         Frame* AddKeyReleaseListener(EmptyEventFunction func);
 
+        void ClearMouseClickListeners();
+        void ClearMouseMoveListeners();
+
+        void ClearLeftMouseButtonPressListeners();
+        void ClearMiddleMouseButtonPressListeners();
+        void ClearRightMouseButtonPressListeners();
+
+        void ClearLeftMouseButtonReleaseListeners();
+        void ClearMiddleMouseButtonReleaseListeners();
+        void ClearRightMouseButtonReleaseListeners();
+
+        // TODO
+        void ClearMouseEnterListeners();
+        void ClearMouseExitListeners();
+        void ClearMouseWheelMoveListeners();
+        void ClearMouseDragListeners();
+
+        void ClearKeyTypeListeners();
+        void ClearKeyPressListeners();
+        void ClearKeyReleaseListeners();
+
+        
+        void ClearMouseListeners();
+        void ClearKeyListeners();
+        void ClearAddListeners();
+
+        virtual void NotifyKeyListeners(KeyEvent *keyEvent);
+        virtual void NotifyMouseListeners(MouseEvent *mouseEvent);
+
+    protected:
+
+        void AddKeyListenerImpl(Event::Type type, Frame* frame, KeyEventFunction func);
+        void AddMouseListenerImpl(Event::Type type, Frame* frame, MouseEventFunction func);
+
+        void ClearKeyListenersImpl(Event::Type type, Frame* frame);
+        void ClearMouseListenersImpl(Event::Type type, Frame* frame);
+
+        void ClearAllKeyListenersImpl(Frame* frame);
+        void ClearAllMouseListenersImpl(Frame* frame);
+        void ClearAllListenersImpl(Frame* frame);
+
+        void NotifyKeyListenersImpl(KeyEvent* keyEvent);
+        void NotifyMouseListenersImpl(MouseEvent* mouseEvent);
+
     protected:
         struct Listeners {
-            using KeyEventFunctionsList = std::list<std::pair<Frame*, KeyEventFunction>>;
-            using MouseEventFunctionsList = std::list<std::pair<Frame*, MouseEventFunction>>;
+            using KeyEventFunctionsList = std::list<KeyEventFunction>;
+            using MouseEventFunctionsList = std::list<MouseEventFunction>;
             Listeners() = default;
             Listeners(const Listeners&) = default;
             Listeners(Listeners&&) = default;
             ~Listeners() = default;
 
-            std::unordered_map<Event::Type, KeyEventFunctionsList> keyEventsMap;
-            std::unordered_map<Event::Type, MouseEventFunctionsList> mouseEventsMap;
+            void AddKeyListenerToStore(Event::Type type, Frame* frame, KeyEventFunction func);
+            void AddMouseListenerToStore(Event::Type type, Frame* frame, MouseEventFunction func);
+
+            void ClearKeyListenersInStore(Event::Type type, Frame* frame);
+            void ClearMouseListenersInStore(Event::Type type, Frame* frame);
+
+            void ClearAllKeyListenersInStore(Frame* frame);
+            void ClearAllMouseListenersInStore(Frame* frame);
+            void ClearAllListenersInStore(Frame* frame);
+
+            void NotifyKeyListenersInStore(KeyEvent* keyEvent);
+            void NotifyMouseListenersInStore(MouseEvent* mouseEvent);
+
+            void MouseMove(MouseEvent mouseEvent) {
+                if (preMouseMoveEvent == nullptr) {
+                    preMouseMoveEvent.reset(new MouseEvent(mouseEvent));
+                    return;
+                }
+
+                auto contains = [](Frame *frame, MouseEvent* mouseEvent) {
+                    Rect rect(frame->GetXAbs(), frame->GetYAbs(), frame->width, frame->height);
+                    int x = mouseEvent->xAbs;
+                    int y = mouseEvent->yAbs;
+                    if (x >= rect.X && y >= rect.Y && x <= (rect.X + rect.Width) && y <= (rect.Y + rect.Height)) {
+                        return true;
+                    }
+                    return false;
+                };
+
+                for (auto& key : mouseEventsMap[Event::Type::mouseEnter]) {
+                    Frame* frame = key.first;
+                    if (contains(frame, &mouseEvent) && !contains(frame, preMouseMoveEvent.get())) {
+                        mouseEvent.type = Event::Type::mouseEnter;
+                        NotifyMouseListenersInStore(&mouseEvent);
+                    }
+                }
+
+                for (auto& key : mouseEventsMap[Event::Type::mouseExit]) {
+                    Frame* frame = key.first;
+                    if (!contains(frame, &mouseEvent) && contains(frame, preMouseMoveEvent.get())) {
+                        mouseEvent.type = Event::Type::mouseExit;
+                        NotifyMouseListenersInStore(&mouseEvent);
+                    }
+                }
+
+                preMouseMoveEvent.reset(new MouseEvent(mouseEvent));
+            }
+
+            std::unique_ptr<MouseEvent> preMouseMoveEvent;
+
+            std::unordered_map<Event::Type, std::unordered_map<Frame*, KeyEventFunctionsList>> keyEventsMap;
+            std::unordered_map<Event::Type, std::unordered_map<Frame*, MouseEventFunctionsList>> mouseEventsMap;
         };
 
     protected:
@@ -141,10 +251,6 @@ namespace wnd_accelerator {
         virtual void BuildImpl() = 0;
         // Apply resize and reposition
         virtual void UpdateImpl() = 0;
-        // Some painting operations of this object
-        virtual void Paint() = 0;
-
-        void RepaintImpl();
 
         // Recursive packing childs
         void Pack();
@@ -159,9 +265,6 @@ namespace wnd_accelerator {
         int x;
         int y;
 
-        int xAbs;
-        int yAbs;
-
         int width;
         int height;
 
@@ -174,6 +277,7 @@ namespace wnd_accelerator {
         Frame* parent;
         std::list<Frame*> childs;
         bool build;
+        bool paint;
         // Need to keep event listeners before parent set
         std::unique_ptr<Listeners> listeners;
     };

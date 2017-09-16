@@ -11,6 +11,9 @@ namespace wnd_accelerator {
         GdiControl& operator=(const GdiControl&) = delete;
         virtual ~GdiControl();
 
+        virtual Graphics* GetGraphics() final;
+        virtual Bitmap* GetBuffer() final;
+
     protected:
         // Build real frame
         virtual void BuildImpl();
@@ -19,7 +22,7 @@ namespace wnd_accelerator {
         virtual void UpdateImpl();
 
         // Some painting operations of this object
-        virtual void Paint() final;
+        virtual void Paint();
 
         // Next methoods called by Paint()
         virtual void PaintPre(Graphics* graphics) = 0;

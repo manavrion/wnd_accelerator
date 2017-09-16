@@ -1,9 +1,39 @@
 #include "window.h"
 
+#include <string>
 #include <Windows.h>
 #include <windowsx.h>
 
 namespace wnd_accelerator {
+
+    // static
+    extern LRESULT CALLBACK windowProcMapper(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam);
+
+    void Window::InitPre() {
+
+        windowInternalId = "window" + std::to_string(int(this));
+
+        WNDCLASSEX wcex;
+        wcex.cbSize = sizeof(WNDCLASSEX);
+
+        wcex.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+        wcex.lpfnWndProc = windowProcMapper;
+        wcex.cbClsExtra = 0;
+        wcex.cbWndExtra = 0;
+        wcex.hInstance = GetInstanceModule(nullptr);
+        //wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_METAFRAME));
+        wcex.hIcon = nullptr;
+        wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+        wcex.hbrBackground = nullptr;
+        //wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_METAFRAME);
+        wcex.lpszMenuName = nullptr;
+
+        wcex.lpszClassName = windowInternalId.c_str();
+        //wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+        wcex.hIconSm = nullptr;
+
+        RegisterClassEx(&wcex);
+    }
 
     LRESULT Window::WindowProc(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) {
         switch (message) {
@@ -17,8 +47,8 @@ namespace wnd_accelerator {
 
                 mouseEvent.xAbs = GET_X_LPARAM(lParam);
                 mouseEvent.yAbs = GET_Y_LPARAM(lParam);
-                mouseEvent.x -= this->xAbs;
-                mouseEvent.y -= this->yAbs;
+                mouseEvent.x -= this->GetXAbs();
+                mouseEvent.y -= this->GetYAbs();
 
                 if (wParam & MK_CONTROL) mouseEvent.controlDown = true;
                 if (wParam & MK_LBUTTON) mouseEvent.leftMouseButtonDown = true;
@@ -48,10 +78,7 @@ namespace wnd_accelerator {
                         break;
                     }
                 }
-
-                for (auto& mouseEventFunctionData : this->listeners->mouseEventsMap[mouseEvent.type]) {
-                    mouseEventFunctionData.second(mouseEventFunctionData.first, &mouseEvent);
-                }
+                this->NotifyMouseListeners(&mouseEvent);
                 break;
             }
             case WM_KEYDOWN:
@@ -72,9 +99,7 @@ namespace wnd_accelerator {
                         keyEvent.type = KeyEvent::Type::keyRelease;
                         break;
                 }
-                for (auto& keyEventFunctionData : this->listeners->keyEventsMap[keyEvent.type]) {
-                    keyEventFunctionData.second(keyEventFunctionData.first, &keyEvent);
-                }
+                this->NotifyKeyListeners(&keyEvent);
                 break;
             }
             case WM_PAINT:
@@ -89,17 +114,19 @@ namespace wnd_accelerator {
 
     // You must use Repaint() to apply graphical changes
     void Window::Repaint() {
-        RepaintImpl();
-        InvalidateRect(hWindow, nullptr, true);
+        paint = true;
+        InvalidateRect(hWindow, nullptr, false);
     }
 
     int Window::Run() {
         Build();
-        Pack();
+        Pack();        
 
         bool nCmdShow = true;
         ShowWindow(hWindow, nCmdShow);
         UpdateWindow(hWindow);
+
+        Repaint();
 
         MSG msg;
         while (GetMessage(&msg, nullptr, 0, 0)) {

@@ -11,8 +11,7 @@ namespace wnd_accelerator {
     class NativeControl : public GdiControl {
     public:
         NativeControl();
-        NativeControl(const NativeControl&) = delete;
-        NativeControl(NativeControl&&) = delete;
+        virtual ~NativeControl();
 
     protected:
         // Build real frame
@@ -44,10 +43,6 @@ namespace wnd_accelerator {
         // OS_WIN
         HWND hWindow;
         std::string windowInternalId;
-
-    public:
-        virtual ~NativeControl();
-
     };
 
 }

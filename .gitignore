@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /.dist_x86_Debug
+/.lib/x86_Debug

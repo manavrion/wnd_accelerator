@@ -5,6 +5,9 @@ namespace wnd_accelerator {
 
     struct Event {
         enum class Type {
+            mouse,
+            key,
+
             mouseClick,
             mouseMove,
 
@@ -21,7 +24,7 @@ namespace wnd_accelerator {
             mouseExit,
             mouseDrag,
             mouseWheel,
-
+                        
             keyType,
             keyPress,
             keyRelease

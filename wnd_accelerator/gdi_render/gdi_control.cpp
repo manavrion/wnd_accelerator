@@ -8,6 +8,10 @@ namespace wnd_accelerator {
         DeleteBuffer();
     }
 
+    Graphics* GdiControl::GetGraphics() {
+        return graphics;
+    }
+
     // Build real frame
     void GdiControl::BuildImpl() {
         CreateBuffer();
@@ -20,6 +24,7 @@ namespace wnd_accelerator {
 
     // Some painting operations of this object
     void GdiControl::Paint() {
+        paint = false;
         PaintPre(graphics);
         PaintChildBuffers(graphics);
         PaintPost(graphics);
@@ -27,6 +32,11 @@ namespace wnd_accelerator {
 
     void GdiControl::PaintChildBuffers(Graphics* graphics) {
         for (auto child : childs) {
+            if (((GdiControl*)child)->paint) {
+                child->Paint();
+            } else {
+                child->Paint();
+            }
             graphics->DrawImage(((GdiControl*)child)->buffer, child->GetRect());
         }
     }
@@ -45,9 +55,13 @@ namespace wnd_accelerator {
     }
 
     void GdiControl::ResizeBuffer() {
-        if (!(buffer->GetWidth() == width && buffer->GetHeight() == height)) {
+        /*if (!(buffer->GetWidth() == width && buffer->GetHeight() == height)) {
             CreateBuffer();
-        }
+        }*/
+    }
+
+    Bitmap* GdiControl::GetBuffer() {
+        return buffer;
     }
 
 }

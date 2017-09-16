@@ -13,6 +13,9 @@
     <Filter Include="gdi_render">
       <UniqueIdentifier>{e5040b54-62f2-4832-ae8f-d000018d9da5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="interfaces">
+      <UniqueIdentifier>{feb534e7-1962-4faf-b67f-cedfdfc7fbc7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="native_controls\window.cpp">
@@ -34,6 +37,9 @@
     <ClCompile Include="gdi_render\gdi_control.cpp">
       <Filter>gdi_render</Filter>
     </ClCompile>
+    <ClCompile Include="gdi_render\g_button.cpp">
+      <Filter>gdi_render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="native_controls\window.h">
@@ -51,6 +57,18 @@
     </ClInclude>
     <ClInclude Include="frame.h" />
     <ClInclude Include="gdi_render\gdi_control.h">
+      <Filter>gdi_render</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\i_frame_node.h">
+      <Filter>interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\i_frame_event.h">
+      <Filter>interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\i_frame_paint.h">
+      <Filter>interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="gdi_render\g_button.h">
       <Filter>gdi_render</Filter>
     </ClInclude>
   </ItemGroup>

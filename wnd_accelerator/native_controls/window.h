@@ -14,26 +14,22 @@ namespace wnd_accelerator {
     class Window : public NativeControl {
     public:
         Window();
+        virtual ~Window();
 
-        // You must use Update() to apply the size and position changes
-        virtual void Update() final {
-            UpdateImpl();
-            Repaint();
-        }
-
-        // You must use Repaint() to apply graphical changes
-        virtual void Repaint() final;
-
+        // Use Run() to display window on screen
         int Run();
 
-        virtual ~Window();
+        // You must use Update() to apply the size and position changes
+        virtual void Update() final;
+
+        // To apply graphical changes, you must use Repaint()
+        virtual void Repaint() final;
 
     protected:
         // OS_WIN
         virtual LRESULT WindowProc(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) final;
 
-        virtual void InitPre() final;;
-
+        virtual void InitPre() final;
     };
 
 }
