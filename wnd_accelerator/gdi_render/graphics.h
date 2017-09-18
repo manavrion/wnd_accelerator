@@ -48,6 +48,10 @@ namespace wnd_accelerator {
             ptr->DrawImage(image, x, y, width, height);
         }
 
+        void Clear(Color color) {
+            ptr->Clear(color);
+        }
+
     private:
         Gdiplus::Graphics* ptr;
         int dx;
