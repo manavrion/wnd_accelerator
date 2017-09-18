@@ -27,11 +27,11 @@ namespace wnd_accelerator {
         virtual ~GButton() {}
 
     protected:
-        virtual void PaintPre(Graphics* graphics) {
-            graphics->FillRectangle(&SolidBrush(background), Rect(0, 0, width, height));
-            graphics->DrawString(std::wstring(text.begin(), text.end()).c_str(), -1, &Font(L"Arial", 16), PointF(50, 13), &SolidBrush(Color(255, 255, 255)));
+        virtual void PaintPre(Graphics graphics) {
+            graphics.FillRectangle(&SolidBrush(background), Rect(0, 0, width, height));
+            graphics.DrawString(text, &Font(L"Arial", 16), PointF(50, 13), &SolidBrush(Color(255, 255, 255)));
         }
-        virtual void PaintPost(Graphics* graphics) {}
+        virtual void PaintPost(Graphics graphics) {}
     };
 
 }

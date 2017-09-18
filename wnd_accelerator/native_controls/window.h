@@ -30,6 +30,16 @@ namespace wnd_accelerator {
         virtual LRESULT WindowProc(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) final;
 
         virtual void InitPre() final;
+
+        void DrawBuffer();
+
+        void CreateBuffer();
+        void DeleteBuffer();
+        void ResizeBuffer();
+
+    protected:
+        Gdiplus::Bitmap* buffer;
+        Gdiplus::Graphics* graphics;
     };
 
 }

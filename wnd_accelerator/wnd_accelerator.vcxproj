@@ -221,6 +221,7 @@
     <ClInclude Include="event_system\mouse_event.h" />
     <ClInclude Include="frame.h" />
     <ClInclude Include="gdi_render\gdi_control.h" />
+    <ClInclude Include="gdi_render\graphics.h" />
     <ClInclude Include="gdi_render\g_button.h" />
     <ClInclude Include="interfaces\i_frame_event.h" />
     <ClInclude Include="interfaces\i_frame_node.h" />

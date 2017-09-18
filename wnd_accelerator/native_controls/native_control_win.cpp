@@ -63,40 +63,13 @@ namespace wnd_accelerator {
                                  nullptr);
         nativeControlMap[hWindow] = this;
 
-        CreateBuffer();
     }
 
     LRESULT NativeControl::WindowProc(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) {
         return DefWindowProc(hWindow, message, wParam, lParam);
     }
 
-    void NativeControl::DrawBuffer() {
-        PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hWindow, &ps);
-
-        auto start = std::chrono::system_clock::now();
-
-        this->Paint();
-
-        auto end = std::chrono::system_clock::now();
-        auto tm = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-
-        graphics->FillRectangle(&SolidBrush(Color::Red), Rect(0, 0, 50, 20));
-        graphics->DrawString((std::to_wstring(1000 / tm.count()) + L" fps").c_str(), -1, &Font(L"Arial", 12), PointF(0, 0), &SolidBrush(Color(255, 255, 255)));
-
-        HBITMAP bufferHBitmap;
-        buffer->GetHBITMAP(this->background, &bufferHBitmap);
-        HDC bufferHDC = CreateCompatibleDC(nullptr);
-        SelectObject(bufferHDC, bufferHBitmap);
-
-
-        BitBlt(hdc, 0, 0, width, height, bufferHDC, 0, 0, SRCCOPY);
-
-        DeleteObject(bufferHBitmap);
-        DeleteDC(bufferHDC);
-
-        EndPaint(hWindow, &ps);
-    }
+    
 
     // Build real frame
     void NativeControl::BuildImpl() {
@@ -106,7 +79,7 @@ namespace wnd_accelerator {
 
     // Apply resize and reposition
     void NativeControl::UpdateImpl() {
-        ResizeBuffer();
+        //ResizeBuffer();
     }
 
 }

@@ -10,6 +10,28 @@ namespace wnd_accelerator {
         Repaint();
     }
 
-    Window::~Window() {}
+
+    void Window::CreateBuffer() {
+        if (buffer || graphics) {
+            DeleteBuffer();
+        }
+        buffer = new Gdiplus::Bitmap(width, height);
+        graphics = new Gdiplus::Graphics(buffer);
+    }
+
+    void Window::DeleteBuffer() {
+        delete graphics;
+        delete buffer;
+    }
+
+    void Window::ResizeBuffer() {
+        /*if (!(buffer->GetWidth() == width && buffer->GetHeight() == height)) {
+        CreateBuffer();
+        }*/
+    }
+
+    Window::~Window() {
+        DeleteBuffer();
+    }
 
 }

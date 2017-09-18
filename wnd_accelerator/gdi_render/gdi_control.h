@@ -1,5 +1,6 @@
 #pragma once
 #include "../frame.h"
+#include "graphics.h"
 
 namespace wnd_accelerator {
 
@@ -11,9 +12,6 @@ namespace wnd_accelerator {
         GdiControl& operator=(const GdiControl&) = delete;
         virtual ~GdiControl();
 
-        virtual Graphics* GetGraphics() final;
-        virtual Bitmap* GetBuffer() final;
-
     protected:
         // Build real frame
         virtual void BuildImpl();
@@ -22,20 +20,12 @@ namespace wnd_accelerator {
         virtual void UpdateImpl();
 
         // Some painting operations of this object
-        virtual void Paint();
+        virtual void Paint(Graphics graphics);
 
         // Next methoods called by Paint()
-        virtual void PaintPre(Graphics* graphics) = 0;
-        virtual void PaintChildBuffers(Graphics* graphics);
-        virtual void PaintPost(Graphics* graphics) = 0;
-
-        void CreateBuffer();
-        void DeleteBuffer();
-        void ResizeBuffer();
-
-    protected:
-        Bitmap* buffer;
-        Graphics* graphics;
+        virtual void PaintPre(Graphics graphics) {}
+        virtual void PaintChildBuffers(Graphics graphics);
+        virtual void PaintPost(Graphics graphics) {}
     };
 
 }

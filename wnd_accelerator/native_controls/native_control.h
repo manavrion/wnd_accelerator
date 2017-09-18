@@ -27,8 +27,6 @@ namespace wnd_accelerator {
 
         virtual LRESULT WindowProc(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam);
 
-        virtual void DrawBuffer() final;
-
         virtual void PaintPre(Graphics* graphics) {}
         virtual void PaintPost(Graphics* graphics) {}
 

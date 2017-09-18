@@ -9,6 +9,8 @@
 
 namespace wnd_accelerator {
 
+    class Graphics;
+
     class Frame {
     public:
         Frame();
@@ -85,10 +87,8 @@ namespace wnd_accelerator {
 
         bool IsStaticWidth() const;
         bool IsStaticHeight() const;
-
-        virtual void Paint() = 0;
-        virtual Graphics* GetGraphics() = 0;
-        virtual Bitmap* GetBuffer() = 0;
+        
+        virtual void Paint(Graphics graphics) = 0;
 
         using KeyEventFunction = std::function<void(Frame*, KeyEvent*)>;
         using MouseEventFunction = std::function<void(Frame*, MouseEvent*)>;
