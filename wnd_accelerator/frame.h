@@ -31,6 +31,13 @@ namespace wnd_accelerator {
         // You must use Repaint() to apply graphical changes
         virtual void Repaint();
 
+        void MarkToRepaint() {
+            paint = true;
+            if (parent) {
+                parent->MarkToRepaint();
+            }
+        }
+
         Frame* Add(Frame* child);
 
         std::list<Frame*>& GetChilds();

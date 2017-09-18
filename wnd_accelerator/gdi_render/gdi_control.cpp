@@ -24,7 +24,7 @@ namespace wnd_accelerator {
     void GdiControl::PaintChildBuffers(Graphics graphics) {
         for (auto child : childs) {
             if (((GdiControl*)child)->paint) {
-                child->Paint(Graphics(graphics, this));
+                child->Paint(Graphics(graphics, child));
             }
         }
     }

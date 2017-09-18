@@ -31,6 +31,9 @@ namespace wnd_accelerator {
 
         virtual void InitPre() final;
 
+        void PaintPre(Graphics graphics) override {}
+        void PaintPost(Graphics graphics) override {}
+
         void DrawBuffer();
 
         void CreateBuffer();

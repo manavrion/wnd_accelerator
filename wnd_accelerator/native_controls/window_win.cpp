@@ -44,17 +44,17 @@ namespace wnd_accelerator {
 
         auto start = std::chrono::system_clock::now();
 
-        Graphics g(graphics);
-        this->Paint(g);
+
+        this->Paint(Graphics(graphics, 0, 0));
 
         auto end = std::chrono::system_clock::now();
         auto tm = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-        graphics->FillRectangle(&SolidBrush(Color::Red), Rect(0, 0, 50, 20));
+        graphics->FillRectangle(&SolidBrush(Color::Red), Rect(0, 0, 80, 20));
         Font font(L"Arial", 12);
         SolidBrush b(Color(255, 255, 255));
         if (tm.count() == 0) {
-            graphics->DrawString(L"--", -1, &font, PointF(0, 0), &b);
+            graphics->DrawString(L"1000 < fps", -1, &font, PointF(0, 0), &b);
         } else {
             graphics->DrawString((std::to_wstring(1000 / tm.count()) + L" fps").c_str(), -1, &font, PointF(0, 0), &b);
         }
