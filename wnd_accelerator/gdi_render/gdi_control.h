@@ -23,9 +23,9 @@ namespace wnd_accelerator {
         virtual void Paint(Graphics graphics);
 
         // Next methoods called by Paint()
-        virtual void PaintPre(Graphics graphics) {}
+        virtual void PaintPre(Graphics graphics) = 0;
         virtual void PaintChildBuffers(Graphics graphics);
-        virtual void PaintPost(Graphics graphics) {}
+        virtual void PaintPost(Graphics graphics) = 0;
     };
 
 }
