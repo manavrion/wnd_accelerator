@@ -1,4 +1,5 @@
 #include "frame.h"
+#include "gdi_render\graphics.h"
 
 namespace wnd_accelerator {
 
@@ -34,7 +35,9 @@ namespace wnd_accelerator {
     // You must use Repaint() to apply graphical changes
     void Frame::Repaint() {
         paint = true;
-        parent->Repaint();
+        if (parent) {
+            parent->Repaint();
+        }        
     }
 
     Frame* Frame::Add(Frame* child) {

@@ -3,6 +3,7 @@
 #include <string>
 #include <Windows.h>
 #include <windowsx.h>
+#include <chrono>
 
 namespace wnd_accelerator {
 
@@ -10,7 +11,7 @@ namespace wnd_accelerator {
     extern LRESULT CALLBACK windowProcMapper(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam);
 
     void Window::InitPre() {
-
+        CreateBuffer();
         windowInternalId = "window" + std::to_string(int(this));
 
         WNDCLASSEX wcex;
@@ -33,6 +34,43 @@ namespace wnd_accelerator {
         wcex.hIconSm = nullptr;
 
         RegisterClassEx(&wcex);
+
+        
+    }
+
+    void Window::DrawBuffer() {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWindow, &ps);
+
+        auto start = std::chrono::system_clock::now();
+
+        Graphics g(graphics);
+        this->Paint(g);
+
+        auto end = std::chrono::system_clock::now();
+        auto tm = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+        graphics->FillRectangle(&SolidBrush(Color::Red), Rect(0, 0, 50, 20));
+        Font font(L"Arial", 12);
+        SolidBrush b(Color(255, 255, 255));
+        if (tm.count() == 0) {
+            graphics->DrawString(L"--", -1, &font, PointF(0, 0), &b);
+        } else {
+            graphics->DrawString((std::to_wstring(1000 / tm.count()) + L" fps").c_str(), -1, &font, PointF(0, 0), &b);
+        }
+
+        HBITMAP bufferHBitmap;
+        buffer->GetHBITMAP(this->background, &bufferHBitmap);
+        HDC bufferHDC = CreateCompatibleDC(nullptr);
+        SelectObject(bufferHDC, bufferHBitmap);
+
+
+        BitBlt(hdc, 0, 0, width, height, bufferHDC, 0, 0, SRCCOPY);
+
+        DeleteObject(bufferHBitmap);
+        DeleteDC(bufferHDC);
+
+        EndPaint(hWindow, &ps);
     }
 
     LRESULT Window::WindowProc(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) {

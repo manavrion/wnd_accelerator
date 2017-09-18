@@ -71,5 +71,8 @@
     <ClInclude Include="gdi_render\g_button.h">
       <Filter>gdi_render</Filter>
     </ClInclude>
+    <ClInclude Include="gdi_render\graphics.h">
+      <Filter>gdi_render</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

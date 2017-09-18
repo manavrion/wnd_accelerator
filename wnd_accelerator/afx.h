@@ -9,7 +9,6 @@ using Gdiplus::Point;
 using Gdiplus::PointF;
 using Gdiplus::Size;
 using Gdiplus::Bitmap;
-using Gdiplus::Graphics;
 using Gdiplus::Pen;
 using Gdiplus::Brush;
 using Gdiplus::SolidBrush;
