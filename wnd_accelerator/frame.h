@@ -3,15 +3,17 @@
 #include "event_system/event.h"
 #include "event_system/key_event.h"
 #include "event_system/mouse_event.h"
+#include "interfaces/i_rect.h"
 
 #include <functional>
 #include <list>
+#include <mutex>
 
 namespace wnd_accelerator {
 
     class Graphics;
 
-    class Frame {
+    class Frame : public IRect {
     public:
         Frame();
         Frame(const Frame& abstructFrameObject) = delete;
@@ -39,6 +41,8 @@ namespace wnd_accelerator {
         }
 
         Frame* Add(Frame* child);
+
+        Frame* Erase(Frame* child);
 
         std::list<Frame*>& GetChilds();
         Frame* GetParent();
@@ -283,6 +287,7 @@ namespace wnd_accelerator {
 
         Frame* parent;
         std::list<Frame*> childs;
+        std::mutex childsMutex;
         bool build;
         bool paint;
         // Need to keep event listeners before parent set

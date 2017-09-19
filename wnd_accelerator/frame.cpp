@@ -20,9 +20,11 @@ namespace wnd_accelerator {
             this->BuildImpl();
             build = true;
         }
+        childsMutex.lock();
         for (auto child : childs) {
             child->Build();
         }
+        childsMutex.unlock();
     }
 
     // You must use Update() to apply the size and position changes
@@ -41,10 +43,19 @@ namespace wnd_accelerator {
     }
 
     Frame* Frame::Add(Frame* child) {
+        childsMutex.lock();
         child->parent = this;
         childs.push_back(child);
         this->MergeListeners(std::move(child->listeners));
         child->listeners.reset();
+        childsMutex.unlock();
+        return this;
+    }
+
+    Frame* Frame::Erase(Frame* child) {
+        childsMutex.lock();
+        childs.erase(std::find(childs.begin(), childs.end(), child));
+        childsMutex.unlock();
         return this;
     }
 
@@ -62,10 +73,12 @@ namespace wnd_accelerator {
     }
 
     void Frame::ClearChilds() {
+        childsMutex.lock();
         while (!childs.empty()) {
             delete childs.front();
             childs.erase(childs.begin());
         }
+        childsMutex.unlock();
     }
 
     Frame* Frame::SetX(int x) {
@@ -506,9 +519,11 @@ namespace wnd_accelerator {
     // Recursive packing childs
     void Frame::Pack() {
         this->PackImpl();
+        childsMutex.lock();
         for (auto child : childs) {
             child->Pack();
         }
+        childsMutex.unlock();
     }
 
 

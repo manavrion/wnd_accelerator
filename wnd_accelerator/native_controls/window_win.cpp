@@ -156,6 +156,11 @@ namespace wnd_accelerator {
         InvalidateRect(hWindow, nullptr, false);
     }
 
+    void Window::Close() {
+        DestroyWindow(hWindow);
+        //PostQuitMessage(0);
+    }
+
     int Window::Run() {
         Build();
         Pack();        

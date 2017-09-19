@@ -25,6 +25,8 @@ namespace wnd_accelerator {
         // To apply graphical changes, you must use Repaint()
         virtual void Repaint() final;
 
+        virtual void Close() final;
+
     protected:
         // OS_WIN
         virtual LRESULT WindowProc(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) final;

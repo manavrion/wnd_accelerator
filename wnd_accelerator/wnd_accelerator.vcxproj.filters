@@ -65,14 +65,14 @@
     <ClInclude Include="interfaces\i_frame_event.h">
       <Filter>interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\i_frame_paint.h">
-      <Filter>interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="gdi_render\g_button.h">
       <Filter>gdi_render</Filter>
     </ClInclude>
     <ClInclude Include="gdi_render\graphics.h">
       <Filter>gdi_render</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\i_rect.h">
+      <Filter>interfaces</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
