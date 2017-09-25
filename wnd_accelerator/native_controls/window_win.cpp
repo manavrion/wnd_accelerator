@@ -65,7 +65,7 @@ namespace wnd_accelerator {
         SelectObject(bufferHDC, bufferHBitmap);
 
 
-        BitBlt(hdc, 0, 0, width, height, bufferHDC, 0, 0, SRCCOPY);
+        BitBlt(hdc, 0, 0, width + 10, height + 10, bufferHDC, 0, 0, SRCCOPY);
 
         DeleteObject(bufferHBitmap);
         DeleteDC(bufferHDC);

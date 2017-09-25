@@ -50,10 +50,10 @@ namespace wnd_accelerator {
         void ClearChilds();
 
 
-        Frame* SetX(int x);
-        Frame* SetY(int y);
-        Frame* SetWidth(int width);
-        Frame* SetHeight(int height);
+        virtual Frame* SetX(int x);
+        virtual Frame* SetY(int y);
+        virtual Frame* SetWidth(int width);
+        virtual Frame* SetHeight(int height);
         Frame* SetText(std::string text);
         Frame* SetBackground(Color background);
         Frame* SetStaticWidth();

@@ -16,6 +16,15 @@ namespace wnd_accelerator {
         Window();
         virtual ~Window();
 
+        virtual Frame* SetWidth(int width) {
+            this->width = width - 10;
+            return this;
+        }
+        virtual Frame* SetHeight(int height) {
+            this->height = height - 10;
+            return this;
+        }
+
         // Use Run() to display window on screen
         int Run();
 

@@ -15,7 +15,7 @@ namespace wnd_accelerator {
         if (buffer || graphics) {
             DeleteBuffer();
         }
-        buffer = new Gdiplus::Bitmap(width, height);
+        buffer = new Gdiplus::Bitmap(width+10, height+10);
         graphics = new Gdiplus::Graphics(buffer);
     }
 

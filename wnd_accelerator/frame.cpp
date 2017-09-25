@@ -142,8 +142,8 @@ namespace wnd_accelerator {
     }
 
     Frame* Frame::SetSize(int width, int height) {
-        this->width = width;
-        this->height = height;
+        SetWidth(width);
+        SetHeight(height);
         return this;
     }
 
